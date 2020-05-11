@@ -25,7 +25,6 @@ class Request {
 
     if (this.headers["Content-Type"] === "application/json") {
       this.bodyText = JSON.stringify(this.body)
-      encodeURIComponent
     } else if (this.headers["Content-Type"] === "application/x-www-form-urlencoded") {
       this.bodyText = Object.keys(this.body).map(key => `${key}=${encodeURIComponent(this.body[key])}`).join('&')
     }
@@ -264,6 +263,7 @@ void async function () {
 
 
 
+
 /*
 const client = net.createConnection({
   host: "127.0.0.1",
@@ -286,7 +286,7 @@ const client = net.createConnection({
   }
 
   let request = new Request(options)
-  console.log(request.toString())
+  // console.log(request.toString())
   client.write(request.toString());
   // client.write('POST / HTTP/1.1\r\n');
   // client.write('HOST: 127.0.0.1\r\n');
@@ -306,5 +306,29 @@ client.on('end', () => {
 client.on('error', (err) => {
   console.log(err);
   client.end();
+});
+
+*/
+
+
+/*
+const net = require('net');
+const client = net.createConnection({ port: 8088 }, () => {
+  // 'connect' listener.
+  console.log('connected to server!');
+  client.write('POST / HTTP/1.1\r\n');
+  client.write('HOST: 127.0.0.1\r\n');
+  client.write('Content-Length: 9\r\n');
+  client.write('Content-Type: application/x-www-form-urlencoded\r\n');
+  client.write('\r\n');
+  client.write('name=elle');
+  client.write('\r\n');
+});
+client.on('data', (data) => {
+  console.log(data.toString());
+  client.end();
+});
+client.on('end', () => {
+  console.log('disconnected from server');
 });
 */
