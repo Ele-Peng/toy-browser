@@ -3,7 +3,7 @@
 let currentToken = null
 
 function emit(token) {
-  // if (token.type != "text") 
+  if (token.type != "text") 
     console.log(token)
 }
 
@@ -12,16 +12,17 @@ const EOF = Symbol("EOF")
 function data(char) {
   if (char == "<") {
     return tagOpen
+  } else if (char == "/") {
+    return selfClosingStartTag
+  } else if (char == ">") {
+    emit(currentToken)
+    return data
   } else if (char == EOF) {
     emit({
       type: "EOF"
     })
     return 
   } else {
-    emit({
-      type: "text",
-      content: char
-    })
     return data
   }
 }
@@ -62,7 +63,7 @@ function endTagOpen(char) {
 
 function tagName(char) {
   if (char.match(/^[\t\n\f ]$/)) {
-    return beforeAttributeName
+    return beforeAttributeName(char)
   } else if (char == "/") {
     return selfClosingStartTag
   } else if (char.match(/^[a-zA-Z]$/)) {
@@ -81,9 +82,13 @@ function beforeAttributeName(char) {
   if (char.match(/^[\t\n\f ]$/)) {
     return beforeAttributeName
   } else if (char == ">") {
-    return data
-  } else if (char == "=") {
     return beforeAttributeName
+  } else if (char == "/") {
+    return selfClosingStartTag
+  } else if (char == EOF) {
+    return 
+  } else if (char == "=") {
+    return data
   } else {
     return beforeAttributeName
   }
@@ -91,8 +96,10 @@ function beforeAttributeName(char) {
 
 
 function selfClosingStartTag(char) {
-  if (char == ">") {
+  if (char == ">" || char == "/") {
     currentToken.isSelfClosing = true
+    currentToken.type = "selfClosingTag"
+    emit(currentToken)
     return data
   } else if (char == "EOF") {
 

@@ -208,6 +208,7 @@ function UnquotedAttributeValue(char) {
 function selfClosingStartTag(char) {
   if (char == ">" || char == "/") {
     currentToken.isSelfClosing = true
+    currentToken.type = "selfClosingTag"
     emit(currentToken)
     return data
   } else if (char == "EOF") {

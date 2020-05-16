@@ -1,4 +1,4 @@
-// 处理属性 constructTree
+// constructTree
 
 let currentToken = null
 let currentAttribute = null
@@ -36,13 +36,14 @@ function emit(token) {
     if (!token.isSelfClosing)
       stack.push(element)
 
-    console.log('push', element)
+    // console.log('push', element)
 
   } else if (token.type == "endTag") {
     if (top.tagName != token.tagName) {
       throw new Error("Tag start end doesn't match")
     } else {
-      console.log('pop', stack.pop())
+      // console.log('pop', stack.pop())
+      stack.pop()
     }
   }
 }
@@ -267,5 +268,4 @@ module.exports.parseHTML = function parseHTML(html){
 
   state = state(EOF)
   
-  console.log(stack)
 }

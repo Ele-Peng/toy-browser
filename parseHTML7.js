@@ -35,12 +35,13 @@ function emit(token) {
       stack.push(element)
     
     currentTextNode = null
-    console.log('push', element)
+    // console.log('push', element)
   } else if (token.type == "endTag") {
     if (top.tagName != token.tagName) {
       throw new Error("Tag start end doesn't match")
     } else {
-      console.log('pop', stack.pop())
+      // console.log('pop', stack.pop())
+      stack.pop()
     }
     currentTextNode = null
   } else if (token.type == "text") {
@@ -52,7 +53,7 @@ function emit(token) {
       top.children.push(currentTextNode)
     }
     currentTextNode.content += token.content
-    console.log(top.children)
+    // console.log(top.children)
   }
 }
 
@@ -271,10 +272,8 @@ module.exports.parseHTML = function parseHTML(html){
 
   for (let char of html) {
     state = state(char)
-    // console.log(state)
   }
 
   state = state(EOF)
   
-  // console.log(stack)
 }
