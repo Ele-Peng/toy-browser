@@ -1,0 +1,23 @@
+{
+  "name": "toy-browser",
+  "version": "1.0.0",
+  "description": "a toy browser 🙆",
+  "main": "client.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ele-Peng/toy-browser.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ele-Peng/toy-browser/issues"
+  },
+  "homepage": "https://github.com/Ele-Peng/toy-browser#readme",
+  "dependencies": {
+    "css": "^2.2.4"
+  }
+}
