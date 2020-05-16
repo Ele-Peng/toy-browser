@@ -1,4 +1,5 @@
 const net = require("net");
+const parser = require("./parseHTML7.js")
 
 
 class Request {
@@ -257,6 +258,8 @@ void async function () {
   let request = new Request(options)
 
   let response = await request.send()
+
+  let dom = parser.parseHTML(response.body)
   console.log(response)
 }()
 
