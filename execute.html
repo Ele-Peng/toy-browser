@@ -29,7 +29,7 @@
   //   return false
   // }
   // match("I aabcdefghm grood.")
-  
+
   // function match(string) {
   //   let state = start
   //   for (let char of string) {
@@ -76,7 +76,8 @@
   //   else
   //     return start
   // }
-  // match("I aabcdefghm grood.")
+  // console.log(match("I aabcdefghm grood."))
+  // console.log(match("I aacdefghm grood."))
 
   // function match(string) {
   //   let state = start
@@ -124,7 +125,10 @@
   //   else
   //     return findB(char)
   // }
-  // match("I aabcabcabx grood.")
+  // console.log(match("I aabcabcabx grood."))
+  // console.log(match("I aabcabcabcabx grood."))
+  // console.log(match("I aabcabcabxabx grood."))
+  // console.log(match("I aabcabcababx grood."))
 
 
   // function match(string) {
@@ -179,10 +183,82 @@
   //   else
   //     return findB2(char)
   // }
-  // match("I aababababx grood.")
+  // console.log(match("I aababababx grood."))
+  // console.log(match("I aabababababx grood."))
+  // console.log(match("I aababaeababx grood."))
+  // console.log(match("I aabababaabx grood."))
 
-  function match(pattern, string) {
+
+  function prefixTable(pattern, prefix, n) {
+    prefix[0] = 0; // prefix 初始
+    let len = 0; // 最长公共前后缀长度
+    let i = 1;
+    while(i < n) {
+      if (pattern[i] == pattern[len]) {
+        len ++;
+        prefix[i] = len;
+        i ++;
+      } else {
+        if (len > 0) {
+          len = prefix[len - 1]
+        }
+        else {
+          prefix[i] = len
+          i ++
+        }
+      }
+    }
+    return prefix
 
   }
-  match("abababx", "I aababababx grood.")
+
+  function movePrefixTable(prefix, n) {
+    for (let i = n - 1; i > 0; i --) {
+      prefix[i] = prefix[i - 1]
+    }
+    prefix[0] = -1
+    return prefix
+  }
+
+  function kmpSearch(text, pattern) {
+    const patternArray = pattern.split("")
+    let n = patternArray.length
+    const textArray = text.split("")
+    let m = textArray.length
+
+    let prefixArray = new Array(n)
+    const prefixTemp = prefixTable(pattern, prefixArray, n)
+    const prefix = movePrefixTable(prefixTemp, n)
+
+    // textArray len m
+    // pattern len n
+
+    let i = 0, j = 0;
+    while(i < m) {
+      if (j == n - i && textArray[i] == pattern[j]) {
+        console.log("Found pattern at ", i - j)
+        j = prefix[j]
+      }
+      if (textArray[i] == pattern[j]) {
+        i ++;
+        j ++;
+      } else {
+        j = prefix[j]
+        if (j == -1) {
+          i ++;
+          j ++;
+        }
+      }
+    }
+  }
+
+  kmpSearch("ABABABABCABAAB", "ABABCABAA")
+
+  // const prefixTemp = prefixTable("ABABCABAA", new Array(9), 9)
+  // const prefix = movePrefixTable(prefixTemp, 9)
+
+  // function match(pattern, string) {
+
+  // }
+  // match("abababx", "I aababababx grood.")
 </script>
