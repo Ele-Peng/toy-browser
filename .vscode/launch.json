@@ -8,7 +8,7 @@
       "type": "node",
       "request": "launch",
       "name": "Launch Program",
-      "program": "${workspaceFolder}/parseHTML7.js",
+      "program": "${workspaceFolder}/computeCSS7.js",
       "skipFiles": [
         "<node_internals>/**"
       ]
