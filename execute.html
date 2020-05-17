@@ -189,76 +189,134 @@
   // console.log(match("I aabababaabx grood."))
 
 
-  function prefixTable(pattern, prefix, n) {
-    prefix[0] = 0; // prefix 初始
-    let len = 0; // 最长公共前后缀长度
-    let i = 1;
-    while(i < n) {
-      if (pattern[i] == pattern[len]) {
-        len ++;
-        prefix[i] = len;
-        i ++;
-      } else {
-        if (len > 0) {
-          len = prefix[len - 1]
-        }
-        else {
-          prefix[i] = len
-          i ++
-        }
-      }
-    }
-    return prefix
+  // function prefixTable(pattern, prefix, n) {
+  //   prefix[0] = 0; // prefix 初始
+  //   let len = 0; // 最长公共前后缀长度
+  //   let i = 1;
+  //   while(i < n) {
+  //     if (pattern[i] === pattern[len]) {
+  //       len ++;
+  //       prefix[i] = len;
+  //       i ++;
+  //     } else {
+  //       if (len > 0) {
+  //         len = prefix[len - 1]
+  //       }
+  //       else {
+  //         prefix[i] = len
+  //         i ++
+  //       }
+  //     }
+  //     console.log(prefix)
+  //   }
+  // }
 
-  }
+  // function movePrefixTable(prefix, n) {
+  //   for (let i = n - 1; i > 0; i --) {
+  //     prefix[i] = prefix[i - 1]
+  //   }
+  //   prefix[0] = -1
+  // }
+
+  // function kmpSearch(text, pattern) {
+  //   const patternArray = pattern.split("")
+  //   let patternLen = patternArray.length
+  //   const textArray = text.split("")
+  //   let textLen = textArray.length
+
+  //   let prefixArray = new Array(patternLen)
+  //   prefixTable(patternArray, prefixArray, patternLen)
+  //   movePrefixTable(prefixArray, patternLen)
+
+  //   // console.log('prefixTemp', prefixTemp)
+  //   console.log('prefixArray', prefixArray)
+
+  //   // textArray len m
+  //   // pattern len n
+
+  //   let i = 0, j = 0;
+  //   while(i < textLen) {
+  //     if (j === patternLen - 1 && textArray[i] === patternArray[j]) {
+  //       console.log("Found pattern at ", i - j)
+  //       j = prefixArray[j]
+  //     }
+  //     if (textArray[i] === patternArray[j]) {
+  //       i ++;
+  //       j ++;
+  //     } else {
+  //       j = prefixArray[j]
+  //       if (j === -1) {
+  //         i ++;
+  //         j ++;
+  //       }
+  //     }
+  //   }
+  // }
+
+  // kmpSearch("ABABABABCABAAB", "ABABCABAA")
 
   function movePrefixTable(prefix, n) {
     for (let i = n - 1; i > 0; i --) {
       prefix[i] = prefix[i - 1]
     }
     prefix[0] = -1
-    return prefix
   }
 
-  function kmpSearch(text, pattern) {
+  function match(text, pattern) {
     const patternArray = pattern.split("")
-    let n = patternArray.length
+    let patternLen = patternArray.length
     const textArray = text.split("")
-    let m = textArray.length
+    let textLen = textArray.length
+    let prefixArray = new Array(patternLen)
 
-    let prefixArray = new Array(n)
-    const prefixTemp = prefixTable(pattern, prefixArray, n)
-    const prefix = movePrefixTable(prefixTemp, n)
+    let patternState = patteranStart
+    prefixArray[0] = 0
+    let len = 0
+    let res = {len: 0, needAdd: true}
+    for (let i = 1; i < patternLen; res.needAdd && i ++) {
+      res = patternState(i, pattern, len, prefixArray)
+      len = res.len
+    }
 
-    // textArray len m
-    // pattern len n
+    movePrefixTable(prefixArray, patternLen)
 
     let i = 0, j = 0;
-    while(i < m) {
-      if (j == n - i && textArray[i] == pattern[j]) {
+    while(i < textLen) {
+      if (j === patternLen - 1 && textArray[i] === patternArray[j]) {
         console.log("Found pattern at ", i - j)
-        j = prefix[j]
+        j = prefixArray[j]
+        return true
       }
-      if (textArray[i] == pattern[j]) {
+      if (textArray[i] === patternArray[j]) {
         i ++;
         j ++;
       } else {
-        j = prefix[j]
-        if (j == -1) {
+        j = prefixArray[j]
+        if (j === -1) {
           i ++;
           j ++;
         }
       }
     }
+    return false
   }
 
-  kmpSearch("ABABABABCABAAB", "ABABCABAA")
+  function patteranStart(i, pattern, len, prefix) {
+      if (pattern[i] === pattern[len]) {
+        len ++;
+        prefix[i] = len;
+        return {len, needAdd: true};
+      } else {
+        if (len > 0) {
+          len = prefix[len - 1]
+          return {len, needAdd: false}
+        }
+        else {
+          prefix[i] = len
+          return {len, needAdd: true}
+        }
+      }
+  }
 
-  // const prefixTemp = prefixTable("ABABCABAA", new Array(9), 9)
-  // const prefix = movePrefixTable(prefixTemp, 9)
-
-  // function match(pattern, string) {
-
-  // }
-  // match("abababx", "I aababababx grood.")
+  match("ABABABABCABAAB", "ABABCABAA")
 </script>
