@@ -255,68 +255,206 @@
 
   // kmpSearch("ABABABABCABAAB", "ABABCABAA")
 
-  function movePrefixTable(prefix, n) {
-    for (let i = n - 1; i > 0; i --) {
-      prefix[i] = prefix[i - 1]
-    }
-    prefix[0] = -1
-  }
+  // function movePrefixTable(prefix, n) {
+  //   for (let i = n - 1; i > 0; i--) {
+  //     prefix[i] = prefix[i - 1]
+  //   }
+  //   prefix[0] = -1
+  // }
 
-  function match(text, pattern) {
-    const patternArray = pattern.split("")
-    let patternLen = patternArray.length
-    const textArray = text.split("")
-    let textLen = textArray.length
-    let prefixArray = new Array(patternLen)
+  // function match(text, pattern) {
+  //   const patternArray = pattern.split("")
+  //   let patternLen = patternArray.length
+  //   const textArray = text.split("")
+  //   let textLen = textArray.length
+  //   let prefixArray = new Array(patternLen)
 
-    let patternState = patteranStart
+  //   let patternState = patteranStart
+  //   prefixArray[0] = 0
+  //   let len = 0
+  //   let res = { len: 0, needAdd: true }
+  //   for (let i = 1; i < patternLen; res.needAdd && i++) {
+  //     res = patternState(i, pattern, len, prefixArray)
+  //     len = res.len
+  //   }
+
+  //   movePrefixTable(prefixArray, patternLen)
+
+
+  //   let kmpSearchRes = { iNeedAdd: false, jNeedAdd: false, isMatched: false }
+  //   for (let i = 0, j = 0; i < textLen;) {
+  //     kmpSearchRes = KMPSearch(i, j, textArray, patternArray, prefixArray, patternLen)
+  //     if (kmpSearchRes.isMatched) {
+  //       console.log("First Found pattern at ", i - j)
+  //       return kmpSearchRes.isMatched
+  //     }
+  //     if (kmpSearchRes.jNeedAdd)
+  //       j++
+  //     if (kmpSearchRes.iNeedAdd)
+  //       i++
+  //   }
+  //   return kmpSearchRes.isMatched
+  // }
+
+  // function patteranStart(i, pattern, len, prefix) {
+  //   if (pattern[i] === pattern[len]) {
+  //     len++;
+  //     prefix[i] = len;
+  //     return { len, needAdd: true };
+  //   } else {
+  //     if (len > 0) {
+  //       len = prefix[len - 1]
+  //       return { len, needAdd: false }
+  //     }
+  //     else {
+  //       prefix[i] = len
+  //       return { len, needAdd: true }
+  //     }
+  //   }
+  // }
+
+  // function KMPSearch(i, j, textArray, patternArray, prefixArray, patternLen) {
+  //   debugger
+  //   if (j === patternLen - 1 && textArray[i] === patternArray[j]) {
+  //     j = prefixArray[j]
+  //     return { iNeedAdd: false, jNeedAdd: false, isMatched: true }
+  //   }
+  //   if (textArray[i] === patternArray[j]) {
+  //     return { iNeedAdd: true, jNeedAdd: true, isMatched: false }
+  //   } else {
+  //     j = prefixArray[j]
+  //     if (j === -1) {
+  //       return { iNeedAdd: true, jNeedAdd: true, isMatched: false }
+  //     }
+  //   }
+  //   return { iNeedAdd: true, jNeedAdd: false, isMatched: false }
+  // }
+  // match("ABABABABCABAAB", "ABABCABAA")
+
+
+
+
+  let textArray = [] // 未知字符串
+  let text = ""
+  let textLen = 0 // 未知字符串长度
+  let patternArray = [] // pattern 字符串
+  let pattern = ""
+  let patternLen // 未知 pattern 长度
+  let prefixArray = null // KMP prefix table
+  let len = 0 // 最长公共前后缀长度
+
+
+  function initState() {
+    patternArray = pattern.split("")
+    patternLen = patternArray.length
+    textArray = text.split("")
+    textLen = textArray.length
+    prefixArray = new Array(patternLen)
     prefixArray[0] = 0
     let len = 0
-    let res = {len: 0, needAdd: true}
-    for (let i = 1; i < patternLen; res.needAdd && i ++) {
-      res = patternState(i, pattern, len, prefixArray)
-      len = res.len
-    }
-
-    movePrefixTable(prefixArray, patternLen)
-
-    let i = 0, j = 0;
-    while(i < textLen) {
-      if (j === patternLen - 1 && textArray[i] === patternArray[j]) {
-        console.log("Found pattern at ", i - j)
-        j = prefixArray[j]
-        return true
-      }
-      if (textArray[i] === patternArray[j]) {
-        i ++;
-        j ++;
-      } else {
-        j = prefixArray[j]
-        if (j === -1) {
-          i ++;
-          j ++;
-        }
-      }
-    }
-    return false
+    return patteranStart
   }
 
-  function patteranStart(i, pattern, len, prefix) {
-      if (pattern[i] === pattern[len]) {
-        len ++;
-        prefix[i] = len;
-        return {len, needAdd: true};
-      } else {
-        if (len > 0) {
-          len = prefix[len - 1]
-          return {len, needAdd: false}
-        }
-        else {
-          prefix[i] = len
-          return {len, needAdd: true}
-        }
+
+  function patteranStart(i) {
+    if (patternArray[i] === patternArray[len]) {
+      len++;
+      prefixArray[i] = len;
+      return { needAdd: true };
+    } else {
+      if (len > 0) {
+        len = prefixArray[len - 1]
+        return { needAdd: false }
       }
+      else {
+        prefixArray[i] = len
+        return { needAdd: true }
+      }
+    }
+    if (i ===  patternLen) {
+      return movePrefixTable
+    }
+  }
+
+
+  function movePrefixTable() {
+    for (let i = patternLen - 1; i > 0; i--) {
+      prefixArray[i] = prefixArray[i - 1]
+    }
+    prefixArray[0] = -1
+    return KMPSearch
+  }
+
+
+  function KMPSearch(i, j) {
+    if (j === patternLen - 1 && textArray[i] === patternArray[j]) {
+      j = prefixArray[j]
+      return { iNeedAdd: false, jNeedAdd: false, isMatched: true }
+    }
+    if (textArray[i] === patternArray[j]) {
+      return { iNeedAdd: true, jNeedAdd: true, isMatched: false }
+    } else {
+      j = prefixArray[j]
+      if (j === -1) {
+        return { iNeedAdd: true, jNeedAdd: true, isMatched: false }
+      }
+    }
+    return { iNeedAdd: true, jNeedAdd: false, isMatched: false }
+  }
+  
+  const STATUS_MAP = {
+    "init": initState,
+    "prefixtable": patteranStart,
+    "movePrefixTable": movePrefixTable,
+    "KMPSearch": KMPSearch
+  }
+
+  function match(_text, _pattern) {
+    text = _text
+    pattern = _pattern
+
+    let patternState = initState
+    let STATUS_MAP_KEYS = Object.keys(STATUS_MAP)
+
+    for (let status = 0; status < STATUS_MAP_KEYS.length; status++) {
+      patternState = STATUS_MAP[STATUS_MAP_KEYS[status]]
+      if (STATUS_MAP_KEYS[status] === "init") {
+
+        patternState()
+
+      } else if (STATUS_MAP_KEYS[status] === "prefixtable") {
+
+        let res = { len: 0, needAdd: true }
+        for (let i = 1; i <= patternLen; res.needAdd && i++) {
+          res = patternState(i)
+        }
+
+      } else if (STATUS_MAP_KEYS[status] === "movePrefixTable") {
+
+        patternState()
+
+      } else if (STATUS_MAP_KEYS[status] === "KMPSearch") {
+
+        let kmpSearchRes = { iNeedAdd: false, jNeedAdd: false, isMatched: false }
+        for (let i = 0, j = 0; i < textLen;) {
+          kmpSearchRes = patternState(i, j)
+          if (kmpSearchRes.isMatched) {
+            console.log("First Found pattern at ", i - j)
+            return kmpSearchRes.isMatched
+          }
+          if (kmpSearchRes.iNeedAdd)
+            i++
+          if (kmpSearchRes.jNeedAdd)
+            j++
+        }
+        return kmpSearchRes.isMatched
+
+      }
+    }
   }
 
   match("ABABABABCABAAB", "ABABCABAA")
+
+
+
 </script>
