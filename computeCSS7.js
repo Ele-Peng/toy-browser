@@ -400,5 +400,5 @@ module.exports.parseHTML = function parseHTML(html){
 
   state = state(EOF)
 
-  return rules
+  return stack[0]
 }

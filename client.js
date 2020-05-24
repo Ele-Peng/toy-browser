@@ -1,6 +1,7 @@
 const net = require("net");
+const images = require("images");
 const parser = require("./computeCSS7.js")
-
+const render = require("./render2.js")
 
 class Request {
   // method, url = host + port + path
@@ -261,7 +262,11 @@ void async function () {
 
   let dom = parser.parseHTML(response.body)
 
-  // console.log('dom', JSON.stringify(dom, null, "    "))
+  let viewport = images(800, 600)
+
+  render(viewport, dom)
+
+  viewport.save("viewport.jpg")
 }()
 
 
