@@ -51,7 +51,7 @@ function layout(element) {
   if (!style.flexWrap || style.flexWrap === 'auto')
     style.flexWrap = 'nowrap'
   if (!style.alignContent || style.alignContent === 'auto')
-    style.alignContent = 'center'
+    style.alignContent = 'stretch'
 
   let
     mainSize, // 主轴size width / height
@@ -165,8 +165,8 @@ function layout(element) {
 
         // 创建新行
         flexLine = []
-        flexLines.push(flexLine)
         flexLine.push(item)
+        flexLines.push(flexLine)
 
         mainSpace = style[mainSize]
         crossSpace = 0
@@ -213,9 +213,10 @@ function layout(element) {
       const mainSpace = items.mainSpace
       let flexTotal = 0
 
+      let itemStyle = null
       for (let i = 0; i < items.length; i++) {
         const item = items[i]
-        const itemStyle = getStyle(item)
+        itemStyle = getStyle(item)
 
         if ((itemStyle.flex !== null) && (itemStyle.flex !== (void 0))) {
           flexTotal += itemStyle.flex
