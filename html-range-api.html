@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="a">
+    <span>1</span>
+    <p>2</p>
+    <a>3</a>
+    <div>4</div>
+  </div>
+</body>
+<script>
+  let element = document.getElementById('a')
+
+  // function reverseChildren(element) {
+
+  //   let children = Array.prototype.slice.call(element.childNodes) // 改变 living collection
+
+  //   for (let child of children) {
+  //     element.removeChild(child)
+  //   }
+
+  //   children.reverse()
+
+  //   for (let child of children) {
+  //     element.appendChild(child)
+  //   }
+  // }
+
+  // function reverseChildren(element) {
+
+  //   let len = element.childNodes.length
+
+  //   while(len -- > 0) {
+  //     element.appendChild(element.childNodes[len])
+  //   }
+  // }
+
+  // function reverseChildren(element) {
+
+  //   let len = element.childNodes.length
+
+  //   let tempFragment = document.createDocumentFragment()
+
+  //   while(len -- > 0) {
+  //     tempFragment.appendChild(element.childNodes[len])
+  //   }
+    
+  //   element.appendChild(tempFragment)
+  // }
+
+  function reverseChildren(element) {
+    let range = new Range()
+    range.selectNodeContents(element) // 选中
+
+    let fragment = range.extractContents() // 切除 少 createDocumentFragment
+    let len = fragment.childNodes.length
+    while(len -- > 0) {
+      fragment.appendChild(fragment.childNodes[len])
+    }
+    element.appendChild(fragment)
+  }
+
+  reverseChildren(element)
+</script>
+</html>
