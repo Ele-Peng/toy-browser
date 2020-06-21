@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    .cell {
+      width: 6px;
+      height: 6px;
+      background-color: lightgreen;
+      border-bottom: solid 1px white;
+      border-right: solid 1px white;
+      vertical-align: middle;
+    }
+
+    #container {
+      display: flex;
+      flex-wrap: wrap;
+      width: 700px;
+    }
+  </style>
+</head>
+<body>
+  <div id="container"></div>
+  <button onclick="localStorage.map = JSON.stringify(map)">save</button>
+</body>
+<script>
+  // function drawMap() {
+    // const map = new Array(100001).join(0).split('').map(item => Number(item))
+    const map = localStorage.map ? JSON.parse(localStorage.map) : new Array(10000).fill(0)
+    let container = document.getElementById('container')
+    for (let row = 0; row < 100; row ++) {
+      for (let col = 0; col < 100; col ++) {
+        let cell = document.createElement("div")
+        cell.classList.add('cell')
+
+        if (map[row * 100 + col] === 1) {
+          cell.style.backgroundColor = "black"
+        }
+
+
+        cell.addEventListener("mousemove", () => {
+          if (mouse) {
+            if (clear) {
+              cell.style.backgroundColor = ""
+              cell.classList.remove("light")
+              map[row * 100 + col] = 0
+            } else {
+              cell.style.backgroundColor = "black"
+              map[row * 100 + col] = 1
+            }
+          }
+        })
+        container.appendChild(cell)
+      }
+    }
+  // }
+  let mouse = false
+  let clear = false
+  document.addEventListener("mousedown", (e) => {
+    mouse = true
+    clear = (e.which === 3) // 3 鼠标右键
+  })
+  document.addEventListener("mouseup", () => mouse = false)
+  document.addEventListener("contextmenu", e => e.preventDefault())
+  // drawMap()
+
+  function path(map, start, end) {
+      
+  }
+</script>
+</html>
