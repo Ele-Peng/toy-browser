@@ -73,10 +73,10 @@
   }
 
 
-  // BreadthSearch
+  // DeepSearch
   async function findPath(map, start, end) {
     map = map.slice()
-    let queue = [start]
+    let stack = [start]
 
     async function insert([col, row], pre) {
       if (map[100 * row + col] !== 0) {
@@ -87,34 +87,23 @@
       }
       map[100 * row + col] = pre
       container.children[row * 100 + col].style.backgroundColor = "pink"
-      await sleep(1)
-      queue.push([col, row])
+      await sleep(5)
+      stack.push([col, row])
     }
 
-    while (queue.length) {
-      console.log('queue============================', queue)
-      let [x, y] = queue.shift() // pop unshift / push shift
+    while (stack.length) {
+      console.log('stack============================', stack)
+      let [x, y] = stack.pop() // pop unshift / push shift
       if (x === end[0] && y === end[1]) {
-        let path = []
-        while (x !== start[0] || y !== start[1]) {
-          path.push([x, y])
-          container.children[y * 100 + x].style.backgroundColor = "blue"
-          [x, y] = map[y * 100 + x]
+        while(x !== start[0] || y !== start[1]) {
+          return true
         }
-        return path
       }
-      await insert([x - 1, y], [x, y])
-      await insert([x + 1, y], [x, y])
-      await insert([x, y - 1], [x, y])
-      await insert([x, y + 1], [x, y])
-
-
-      await insert([x - 1, y - 1], [x, y])
-      await insert([x + 1, y - 1], [x, y])
-      await insert([x - 1, y + 1], [x, y])
-      await insert([x + 1, y + 1], [x, y])
+      await insert([x - 1, y])
+      await insert([x + 1, y])
+      await insert([x, y - 1])
+      await insert([x, y + 1])
     }
-    return null
   }
 </script>
 
