@@ -28,8 +28,38 @@
   <button onclick="localStorage.map = JSON.stringify(map)">save</button>
 </body>
 <script>
+
+
+  class Sorted {
+    constructor(data, compare) {
+      this.data = data;
+      this.compare = compare;
+    }
+    take() {
+      if (!this.data.length)
+        return
+      let min = this.data[0]
+      let minIndex = 0
+      for (let i = 0; i < this.data.length; i++) {
+        const element = array[i]
+        if (this.compare(this.data[i], min) < 0) {
+          min = this.data[i]
+          minIndex = i
+        }
+      }
+      this.data[minIndex] = this.data[this.data.length - 1]
+      this.data.pop()
+      return min
+    }
+    insert(v) {
+      this.data.push(v)
+    }
+    get length() {
+      return this.data.length;
+    }
+  }
   // const map = new Array(100001).join(0).split('').map(item => Number(item))
-  const map = localStorage.map ? JSON.parse(localStorage.map) : new Array(10000).fill(0)
+  let map = localStorage.map ? JSON.parse(localStorage.map) : Array(10000).fill(0)
   let container = document.getElementById('container')
   for (let row = 0; row < 100; row++) {
     for (let col = 0; col < 100; col++) {
@@ -45,7 +75,6 @@
         if (mouse) {
           if (clear) {
             cell.style.backgroundColor = ""
-            cell.classList.remove("light")
             map[row * 100 + col] = 0
           } else {
             cell.style.backgroundColor = "black"
@@ -76,31 +105,34 @@
   // BreadthSearch
   async function findPath(map, start, end) {
     map = map.slice()
+
     let queue = [start]
 
-    async function insert([col, row], pre) {
-      if (map[100 * row + col] !== 0) {
+    async function insert([x, y], pre) {
+      if (map[y * 100 + x] !== 0)
         return
-      }
-      if (col < 0 || row < 0 || col >= 100 || row >= 100) {
+      if (x < 0 || y < 0 || x >= 100 || y >= 100)
         return
-      }
-      map[100 * row + col] = pre
-      container.children[row * 100 + col].style.backgroundColor = "pink"
-      await sleep(1)
-      queue.push([col, row])
+      map[y * 100 + x] = pre
+      // container.children[y * 100 + x].style.backgroundColor = "pink"
+      // await sleep(1)
+      queue.push([x, y])
     }
 
     while (queue.length) {
-      console.log('queue============================', queue)
       let [x, y] = queue.shift() // pop unshift / push shift
+      console.log('[x, y]', [x, y])
       if (x === end[0] && y === end[1]) {
         let path = []
+
         while (x !== start[0] || y !== start[1]) {
-          path.push([x, y])
-          container.children[y * 100 + x].style.backgroundColor = "blue"
+          console.log('================')
+          console.log('[x, y]', [x, y])
+          path.push(map[y * 100 + x])
+          container.children[y * 100 + x].style.backgroundColor = 'red'
           [x, y] = map[y * 100 + x]
         }
+
         return path
       }
       await insert([x - 1, y], [x, y])
@@ -109,10 +141,10 @@
       await insert([x, y + 1], [x, y])
 
 
-      await insert([x - 1, y - 1], [x, y])
-      await insert([x + 1, y - 1], [x, y])
-      await insert([x - 1, y + 1], [x, y])
-      await insert([x + 1, y + 1], [x, y])
+      // await insert([x - 1, y - 1], [x, y])
+      // await insert([x + 1, y - 1], [x, y])
+      // await insert([x - 1, y + 1], [x, y])
+      // await insert([x + 1, y + 1], [x, y])
     }
     return null
   }
