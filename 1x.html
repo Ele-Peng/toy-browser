@@ -54,11 +54,57 @@
   }
 
   function Expression(source) {
-
+    if (source[0].type === 'AdditiveExpression' && source[1].type === 'EOF') {
+      let node = {
+        type: 'Expression',
+        children: [source.shift(), source.shift()]
+      }
+      source.unshift(node)
+      return node;
+    }
+    AdditiveExpression(source)
+    return Expression(source)
   }
 
   function AdditiveExpression(source) {
-    console.log(source)
+    if (source[0].type === 'Number') {
+      MultiplicationExpression(source)
+      return AdditiveExpression(source)
+    }
+    if (source[0].type === 'MultiplicationExpression') {
+      let node = {
+        type: 'AdditiveExpression',
+        children: [source.shift()],
+      }
+      source.unshift(node)
+      return AdditiveExpression(source)
+    }
+    if (source[0].type === 'AdditiveExpression'
+      && source.length > 1 && source[1].type === '+') {
+      let node = {
+        type: 'AdditiveExpression',
+        children: [source.shift(), source.shift()],
+      }
+      MultiplicationExpression(source);
+      node.children.push(source.shift())
+      source.unshift(node)
+      return AdditiveExpression(source)
+    }
+    if (source[0].type === 'AdditiveExpression'
+      && source.length > 1 && source[1].type === '-') {
+      let node = {
+        type: 'AdditiveExpression',
+        children: [source.shift(), source.shift()],
+      }
+      MultiplicationExpression(source);
+      node.children.push(source.shift())
+      source.unshift(node)
+      return AdditiveExpression(source)
+      return AdditiveExpression(source)
+    }
+    if (source[0].type === 'MultiplicationExpression') {
+      return source[0];
+    }
   }
 
   function MultiplicativeExpression(source) {
